@@ -76,3 +76,21 @@ La aplicación queda disponible en:
 - `make format` — formatea el código con Ruff
 - `make format-check` — verifica el formato
 - `make clean` — elimina `.venv`, cachés y artefactos
+
+## Estándar de Respuestas HTTP JSON
+
+Toda respuesta de esta API (tanto éxitos como errores) devuelve un único formato de contrato basado en 4 campos principales:
+
+- `success` (boolean): Indica si la petición HTTP fue procesada exitosamente o terminó en error.
+- `message` (string): Mensaje humano descriptivo sobre la operación.
+- `data` (T | null): Contiene el payload de la respuesta (puede ser un arreglo, un objeto o null).
+- `errors` (array | null): Contiene detalles técnicos en caso de fallo, de lo contrario es null.
+
+**Ejemplo de respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Datos obtenidos correctamente",
+  "data": { "id": 1, "name": "Item" },
+  "errors": null
+}
