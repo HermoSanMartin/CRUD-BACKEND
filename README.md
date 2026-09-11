@@ -1,96 +1,84 @@
-# CRUD Students & Pets (FastAPI)
+# backend-2026-grupo-XX - API REST con FastAPI
 
-Proyecto FastAPI que implementa un **CRUD en memoria** para la entidad `Student` y sus mascotas (`Pet`). No requiere base de datos ni contenedores: los datos viven en un diccionario dentro del servicio y se pierden al reiniciar la aplicación.
+API REST funcional desarrollada con **FastAPI**, **Pydantic** y **Uvicorn** para la gestión integral de Coleccionistas y la administración de sus entidades asociadas. El proyecto implementa persistencia en memoria (listas y diccionarios), arquitectura multicapa con separación estricta de responsabilidades, validación de datos de entrada y un formato unificado para la gestión de errores.
 
-## Requerimientos
+---
 
-- Python 3.13+ (gestionado automáticamente por [uv](https://docs.astral.sh/uv/))
-- uv
+## 1. Integrantes y Áreas de Responsabilidad
 
-## Resumen funcional
+De acuerdo con la organización obligatoria del proyecto backend, las responsabilidades del equipo están distribuidas de la siguiente manera:
 
-La API expone operaciones CRUD completas:
+| Integrante | Área de Responsabilidad Principal | Tareas Clave |
+| :--- | :--- | :--- |
+| **Felipe Lienlaf** | Lógica de Negocio y Configuración | Configuración de entorno virtual, dependencias, integración de servicios y reglas del negocio. |
+| **Sebastián San Martín** | Dominio, Modelos y Repositorios | Diseñar entidades del dominio, tipos de datos, repositorios en memoria y DTOs con Pydantic. |
+| **[Nombre Integrante 3]** | API, Routers y Contrato REST | Implementación de endpoints, manejo de query/path parameters, respuestas HTTP y ruteo. |
+| **[Nombre Integrante 4]** | Calidad, Pruebas y Documentación | Colección de pruebas en Postman/Thunder Client, validación de casos de error y redacción del README. |
 
-- **Estudiantes** bajo `/api/students`:
-    - **Crear**: `POST /api/students`
-    - **Listar**: `GET /api/students`
-    - **Buscar por id**: `GET /api/students/:id`
-    - **Actualizar**: `PATCH /api/students/:id`
-    - **Eliminar**: `DELETE /api/students/:id` (también elimina sus mascotas)
-- **Mascotas** anidadas bajo `/api/students/:studentId/pets`:
-    - **Listar**: `GET /api/students/:studentId/pets`
-    - **Crear**: `POST /api/students/:studentId/pets`
-    - **Actualizar**: `PATCH /api/students/:studentId/pets/:petId`
-    - **Eliminar**: `DELETE /api/students/:studentId/pets/:petId`
+---
 
-Cada estudiante tiene `id` (UUID), `name`, `email`, `age`, `createdAt` y `updatedAt`. El `email` es único: se rechaza con `409 Conflict` si ya existe.
+## 2. Definición del Problema y Alcance (P1 - P7)
 
-Cada mascota tiene `id` (UUID), `studentId`, `name`, `species`, `age` (opcional), `createdAt` y `updatedAt`. Solo puede operar sobre su estudiante dueño.
+### P1. Situación Concreta Actual
+Actualmente, los coleccionistas de ítems y mascotas registran su inventario, intercambios y datos personales mediante planillas de cálculo separadas o notas manuales. Esto genera inconsistencias en la información, imposibilidad de consultar disponibilidad en tiempo real y errores al intentar asociar mascotas o colecciones a un usuario.
 
-Las respuestas devuelven los datos crudos, sin envoltorios. Los errores de validación usan el formato nativo de FastAPI (`422`) y las excepciones HTTP los códigos estándar (`404`, `409`).
+### P2. Actores del Sistema
+1. **Administrador del Sistema:** Encargado de registrar, actualizar, consultar y dar de baja coleccionistas y recursos asociados.
+2. **Coleccionista / Usuario:** Consulta su catálogo, gestiona sus colecciones y verifica el estado de sus registros.
 
-## Contexto técnico
+### P3. Consecuencias del Problema
+* **Pérdida de Trazabilidad:** Incapacidad de rastrear a quién pertenece cada ítem o mascota de manera precisa.
+* **Duplicidad de Datos:** Creación de registros repetidos con correos o IDs inconsistentes debido a la falta de validaciones de entrada.
 
-- **Backend**: FastAPI
-- **Almacenamiento**: en memoria (sin persistencia)
-- **Validación**: Pydantic v2
-- **Gestor de dependencias**: uv
-- **Documentación**: Swagger en `/docs`
+### P4. Información Administrada por el Backend
+El backend permite registrar, consultar, modificar y eliminar la información de:
+* **Coleccionistas:** ID, nombre, correo electrónico, edad, estado activo/inactivo.
+* **Mascotas (`pets`):** ID, nombre, especie, edad, ID del coleccionista dueño.
+* **Estudiantes (`students`):** ID, nombre, carrera, nivel.
+* **Galería (`gallery_service`):** Relaciones de exhibición de colecciones.
 
-## Ejecución local
+### P5. Acciones Permitidas (Requisitos Funcionales)
+1. El sistema debe permitir registrar un nuevo coleccionista con validación de correo y edad.
+2. El sistema debe permitir consultar el listado completo de coleccionistas con soporte de paginación, filtro y orden.
+3. El sistema debe permitir obtener los detalles de un coleccionista específico mediante su ID.
+4. El sistema debe permitir actualizar la información parcial o total de un coleccionista existente.
+5. El sistema debe permitir eliminar un coleccionista del registro en memoria.
+6. El sistema debe permitir registrar mascotas asociadas a un coleccionista existente.
+7. El sistema debe permitir listar todas las mascotas y filtrarlas por su identificador.
+8. El sistema debe permitir registrar y consultar estudiantes en el módulo auxiliar.
 
-1. Instalar dependencias:
+### P6. Exclusiones del Alcance (Lo que NO resuelve esta versión)
+1. **Sin Interfaz Gráfica (Frontend):** Se expone únicamente la API REST funcional.
+2. **Sin Persistencia en Base de Datos:** Los datos residen temporalmente en memoria (al reiniciar el servidor se restablecen).
+3. **Sin Autenticación ni Autorización:** No incluye JWT, OAuth2 ni gestión de sesiones/contraseñas.
 
-    ```bash
-    make install
-    ```
+### P7. Criterios de Aceptación
+1. El comando `uvicorn app.main:app --reload` inicia el servidor local sin errores.
+2. El endpoint `GET /coleccionistas` ejecuta correctamente la secuencia: **1° Filtrar -> 2° Ordenar -> 3° Paginar**.
+3. Todos los errores controlados devuelven una estructura JSON uniforme con código, mensaje y detalles[cite: 2].
+4. Los endpoints devuelven códigos HTTP semánticamente correctos (`200`, `201`, `204`, `400`, `404`, `422`)[cite: 2].
+5. La documentación Swagger en `/docs` permite probar el 100% de los endpoints[cite: 2].
 
-    O directamente con uv:
+---
 
-    ```bash
-    uv sync
-    ```
+## 3. Modelo del Dominio y Reglas de Negocio
 
-2. Levantar el servidor en modo desarrollo:
+### Diagrama de Clases (Representación)
+```text
+ +-------------------+         1 : N         +-------------------+
+ |   Coleccionista   | --------------------< |       Pet         |
+ +-------------------+                       +-------------------+
+ | - id: int         |                       | - id: int         |
+ | - nombre: str     |                       | - nombre: str     |
+ | - email: EmailStr |                       | - especie: str    |
+ | - edad: int       |                       | - edad: int       |
+ | - activo: bool    |                       | - owner_id: int   |
+ +-------------------+                       +-------------------+
 
-    ```bash
-    make dev
-    ```
-
-    O usando uv:
-
-    ```bash
-    uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 3000
-    ```
-
-La aplicación queda disponible en:
-
-- `http://localhost:3000`
-- `http://localhost:3000/docs`
-
-## Comandos útiles
-
-- `make install` — sincroniza dependencias con uv
-- `make dev` — arranca uvicorn en modo reload
-- `make lint` — ejecuta Ruff (con autocorrección)
-- `make format` — formatea el código con Ruff
-- `make format-check` — verifica el formato
-- `make clean` — elimina `.venv`, cachés y artefactos
-
-## Estándar de Respuestas HTTP JSON
-
-Toda respuesta de esta API (tanto éxitos como errores) devuelve un único formato de contrato basado en 4 campos principales:
-
-- `success` (boolean): Indica si la petición HTTP fue procesada exitosamente o terminó en error.
-- `message` (string): Mensaje humano descriptivo sobre la operación.
-- `data` (T | null): Contiene el payload de la respuesta (puede ser un arreglo, un objeto o null).
-- `errors` (array | null): Contiene detalles técnicos en caso de fallo, de lo contrario es null.
-
-**Ejemplo de respuesta exitosa:**
-```json
-{
-  "success": true,
-  "message": "Datos obtenidos correctamente",
-  "data": { "id": 1, "name": "Item" },
-  "errors": null
-}
+ +-------------------+                       +-------------------+
+ |     Student       |                       |  GalleryService   |
+ +-------------------+                       +-------------------+
+ | - id: int         |                       | - id: int         |
+ | - nombre: str     |                       | - titulo: str     |
+ | - carrera: str    |                       | - coleccion_id:int|
+ +-------------------+                       +-------------------+
