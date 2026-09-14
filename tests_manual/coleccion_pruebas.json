@@ -1,0 +1,84 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Pruebas Galería de Arte - Rama lienlafelipe",
+  "dateExported": "2026-09-14",
+  "version": "1.0",
+  "requests": [
+    {
+      "name": "1. Crear Coleccionista",
+      "url": "http://127.0.0.1:8000/coleccionistas",
+      "method": "POST",
+      "body": {
+        "bodyType": "json",
+        "raw": "{\n  \"nombre\": \"Roberto Matta\",\n  \"correo\": \"roberto@example.com\",\n  \"presupuesto\": 200000.0,\n  \"es_vip\": true\n}"
+      }
+    },
+    {
+      "name": "2. Listar Coleccionistas",
+      "url": "http://127.0.0.1:8000/coleccionistas",
+      "method": "GET"
+    },
+    {
+      "name": "3. Obtener Coleccionista por ID",
+      "url": "http://127.0.0.1:8000/coleccionistas/1",
+      "method": "GET"
+    },
+    {
+      "name": "4. Actualizar Coleccionista",
+      "url": "http://127.0.0.1:8000/coleccionistas/1",
+      "method": "PUT",
+      "body": {
+        "bodyType": "json",
+        "raw": "{\n  \"presupuesto\": 600000.0\n}"
+      }
+    },
+    {
+      "name": "5. Eliminar Coleccionista",
+      "url": "http://127.0.0.1:8000/coleccionistas/2",
+      "method": "DELETE"
+    },
+    {
+      "name": "6. Crear Obra de Arte",
+      "url": "http://127.0.0.1:8000/obras",
+      "method": "POST",
+      "body": {
+        "bodyType": "json",
+        "raw": "{\n  \"titulo\": \"La Creación\",\n  \"precio\": 180000.0,\n  \"estado\": \"DISPONIBLE\",\n  \"anio_creacion\": 1950,\n  \"artista_id\": 1\n}"
+      }
+    },
+    {
+      "name": "7. GET Obras (Filtrar + Ordenar + Paginar)",
+      "url": "http://127.0.0.1:8000/obras?estado=DISPONIBLE&ordenar_por=precio&direccion=desc&pagina=1&limite=5",
+      "method": "GET"
+    },
+    {
+      "name": "8. Obtener Obra por ID",
+      "url": "http://127.0.0.1:8000/obras/1",
+      "method": "GET"
+    },
+    {
+      "name": "9. Listar Artistas",
+      "url": "http://127.0.0.1:8000/artistas",
+      "method": "GET"
+    },
+    {
+      "name": "10. Obtener Artista por ID",
+      "url": "http://127.0.0.1:8000/artistas/1",
+      "method": "GET"
+    },
+    {
+      "name": "11. Procesar Venta (Reglas de Negocio)",
+      "url": "http://127.0.0.1:8000/ventas",
+      "method": "POST",
+      "body": {
+        "bodyType": "json",
+        "raw": "{\n  \"coleccionista_id\": 1,\n  \"obra_id\": 2\n}"
+      }
+    },
+    {
+      "name": "12. Listar Ventas",
+      "url": "http://127.0.0.1:8000/ventas",
+      "method": "GET"
+    }
+  ]
+}
