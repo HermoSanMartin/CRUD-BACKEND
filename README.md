@@ -1,10 +1,11 @@
-# 🎨 API REST - Galería de Arte de Lujo
+lienlafelipe
+# API REST - Galería de Arte de Lujo
 
 API REST desarrollada con **FastAPI** y **Pydantic** para la gestión en memoria de obras de arte, coleccionistas, artistas y transacciones de venta de alto valor. Diseñada bajo una arquitectura limpia en 5 capas con separación estricta de responsabilidades.
 
 ---
 
-## 👥 Información del Proyecto y Colaboración
+# Información del Proyecto y Colaboración
 * **Repositorio:** `CRUD-BACKEND`
 * **Rama de Trabajo:** `lienlafelipe`
 * **Autor:** Felipe Lienlaf
@@ -12,7 +13,7 @@ API REST desarrollada con **FastAPI** y **Pydantic** para la gestión en memoria
 
 ---
 
-## 🛠️ Tecnologías y Herramientas
+# Tecnologías y Herramientas
 * **Lenguaje:** Python 3.10+
 * **Framework Web:** FastAPI
 * **Validaciones de Datos:** Pydantic v2 (uso de `Literal`, `EmailStr`, `Field`, `datetime`)
@@ -21,7 +22,7 @@ API REST desarrollada con **FastAPI** y **Pydantic** para la gestión en memoria
 
 ---
 
-## 🏗️ Estructura del Proyecto (Arquitectura en 5 Capas)
+# Estructura del Proyecto (Arquitectura en 5 Capas)
 
 El proyecto sigue estrictamente la arquitectura requerida en la pauta de evaluación:
 
@@ -38,3 +39,5 @@ CRUD-BACKEND/
 │   └── coleccion_pruebas.json
 ├── README.md             # Documentación técnica del proyecto
 └── requirements.txt      # Librerías y dependencias
+=======
+main
