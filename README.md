@@ -1,96 +1,40 @@
-# CRUD Students & Pets (FastAPI)
+# 🎨 API REST - Galería de Arte de Lujo
 
-Proyecto FastAPI que implementa un **CRUD en memoria** para la entidad `Student` y sus mascotas (`Pet`). No requiere base de datos ni contenedores: los datos viven en un diccionario dentro del servicio y se pierden al reiniciar la aplicación.
+API REST desarrollada con **FastAPI** y **Pydantic** para la gestión en memoria de obras de arte, coleccionistas, artistas y transacciones de venta de alto valor. Diseñada bajo una arquitectura limpia en 5 capas con separación estricta de responsabilidades.
 
-## Requerimientos
+---
 
-- Python 3.13+ (gestionado automáticamente por [uv](https://docs.astral.sh/uv/))
-- uv
+## 👥 Información del Proyecto y Colaboración
+* **Repositorio:** `CRUD-BACKEND`
+* **Rama de Trabajo:** `lienlafelipe`
+* **Autor:** Felipe Lienlaf
+* **Evaluación:** Proyecto Backend E01 - Desarrollo Individual / Grupal
 
-## Resumen funcional
+---
 
-La API expone operaciones CRUD completas:
+## 🛠️ Tecnologías y Herramientas
+* **Lenguaje:** Python 3.10+
+* **Framework Web:** FastAPI
+* **Validaciones de Datos:** Pydantic v2 (uso de `Literal`, `EmailStr`, `Field`, `datetime`)
+* **Servidor ASGI:** Uvicorn
+* **Control de Versiones:** Git & GitHub
 
-- **Estudiantes** bajo `/api/students`:
-    - **Crear**: `POST /api/students`
-    - **Listar**: `GET /api/students`
-    - **Buscar por id**: `GET /api/students/:id`
-    - **Actualizar**: `PATCH /api/students/:id`
-    - **Eliminar**: `DELETE /api/students/:id` (también elimina sus mascotas)
-- **Mascotas** anidadas bajo `/api/students/:studentId/pets`:
-    - **Listar**: `GET /api/students/:studentId/pets`
-    - **Crear**: `POST /api/students/:studentId/pets`
-    - **Actualizar**: `PATCH /api/students/:studentId/pets/:petId`
-    - **Eliminar**: `DELETE /api/students/:studentId/pets/:petId`
+---
 
-Cada estudiante tiene `id` (UUID), `name`, `email`, `age`, `createdAt` y `updatedAt`. El `email` es único: se rechaza con `409 Conflict` si ya existe.
+## 🏗️ Estructura del Proyecto (Arquitectura en 5 Capas)
 
-Cada mascota tiene `id` (UUID), `studentId`, `name`, `species`, `age` (opcional), `createdAt` y `updatedAt`. Solo puede operar sobre su estudiante dueño.
+El proyecto sigue estrictamente la arquitectura requerida en la pauta de evaluación:
 
-Las respuestas devuelven los datos crudos, sin envoltorios. Los errores de validación usan el formato nativo de FastAPI (`422`) y las excepciones HTTP los códigos estándar (`404`, `409`).
-
-## Contexto técnico
-
-- **Backend**: FastAPI
-- **Almacenamiento**: en memoria (sin persistencia)
-- **Validación**: Pydantic v2
-- **Gestor de dependencias**: uv
-- **Documentación**: Swagger en `/docs`
-
-## Ejecución local
-
-1. Instalar dependencias:
-
-    ```bash
-    make install
-    ```
-
-    O directamente con uv:
-
-    ```bash
-    uv sync
-    ```
-
-2. Levantar el servidor en modo desarrollo:
-
-    ```bash
-    make dev
-    ```
-
-    O usando uv:
-
-    ```bash
-    uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 3000
-    ```
-
-La aplicación queda disponible en:
-
-- `http://localhost:3000`
-- `http://localhost:3000/docs`
-
-## Comandos útiles
-
-- `make install` — sincroniza dependencias con uv
-- `make dev` — arranca uvicorn en modo reload
-- `make lint` — ejecuta Ruff (con autocorrección)
-- `make format` — formatea el código con Ruff
-- `make format-check` — verifica el formato
-- `make clean` — elimina `.venv`, cachés y artefactos
-
-## Estándar de Respuestas HTTP JSON
-
-Toda respuesta de esta API (tanto éxitos como errores) devuelve un único formato de contrato basado en 4 campos principales:
-
-- `success` (boolean): Indica si la petición HTTP fue procesada exitosamente o terminó en error.
-- `message` (string): Mensaje humano descriptivo sobre la operación.
-- `data` (T | null): Contiene el payload de la respuesta (puede ser un arreglo, un objeto o null).
-- `errors` (array | null): Contiene detalles técnicos en caso de fallo, de lo contrario es null.
-
-**Ejemplo de respuesta exitosa:**
-```json
-{
-  "success": true,
-  "message": "Datos obtenidos correctamente",
-  "data": { "id": 1, "name": "Item" },
-  "errors": null
-}
+```text
+CRUD-BACKEND/
+├── app/
+│   ├── domain/           # Entidades base y tipos del dominio (models.py)
+│   ├── repositories/     # Persistencia y almacenamiento en memoria (memory_repository.py)
+│   ├── routers/          # Controladores HTTP y rutas FastAPI (coleccionistas_router.py, obras_router.py)
+│   ├── schemas/          # DTOs y esquemas de validación Pydantic (schemas.py)
+│   ├── services/         # Casos de uso y reglas de negocio (gallery_service.py)
+│   └── main.py           # Configuración principal y manejador unificado de errores
+├── tests_manual/         # Colección de pruebas para Thunder Client / Postman
+│   └── coleccion_pruebas.json
+├── README.md             # Documentación técnica del proyecto
+└── requirements.txt      # Librerías y dependencias
